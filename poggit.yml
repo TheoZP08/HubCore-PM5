@@ -1,8 +1,0 @@
---- # Poggit-
-build-by-default: true
-branches:
-- main
-projects:
-  HUBCORE:
-    path: ""
-...
