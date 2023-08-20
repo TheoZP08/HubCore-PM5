@@ -6,6 +6,3 @@ author: TheoZP08
 description: testing
 website: https://example.com
 commands:
-  test:
-    description: test
-    usage: /test
