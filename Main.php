@@ -1,62 +1,53 @@
 <?php
 
-namespace MyPlugin;
+namespace HUBCORE;
 
-use pocketmine\plugin\PluginBase; 
-use pocketmine\command\CommandSender;
-use pocketmine\command\Command;
+use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerJoinEvent; // Import the PlayerJoinEvent
+use pocketmine\item\Item;
 use pocketmine\Player;
+use pocketmine\plugin\PluginBase;
 
-class Main extends PluginBase {
+class YourPlugin extends PluginBase implements Listener {
 
-  private $testCommand;
-
-  public function onEnable(){
-
-    $this->testCommand = new TestCommand($this);
-    $this->getServer()->getCommandMap()->register("test", $this->testCommand);
-
-  }
-
-  public function onDisable(){
-
-    $this->getServer()->getCommandMap()->unregister($this->testCommand);
-
-  }
-
-}
-
-class TestCommand extends Command {
-
-  private $plugin;
-
-  public function __construct(Main $plugin) {
-
-    parent::__construct("test");
-    $this->plugin = $plugin;
-
-  }
-
-  public function execute(CommandSender $sender, string $commandLabel, array $args) {
-
-    if(!$sender instanceof Player) {
-      $sender->sendMessage("This command can only be used in-game");
-      return;
+    public function onEnable() {
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
     }
 
-    if(count($args) < 1) {
-      $sender->sendMessage("Usage: /test <message>");
-      return;
+    public function onPlayerJoin(PlayerJoinEvent $event) {
+        $player = $event->getPlayer();
+        
+        // Give the player the special item when they join
+        $this->giveSpecialItem($player);
     }
 
-    $message = implode(" ", $args);
+    public function onPlayerInteract(PlayerInteractEvent $event) {
+        $player = $event->getPlayer();
+        $item = $event->getItem();
 
-    foreach($this->plugin->getServer()->getOnlinePlayers() as $player) {
-      $player->sendMessage("§c<$sender->getName()> $message");
+        // Check if the player is holding an item and right-clicked
+        if ($event->getAction() === PlayerInteractEvent::RIGHT_CLICK_AIR || $event->getAction() === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
+            if ($item instanceof Item && $item->getCustomName() === "§l§9[Navigator]") {
+                // Replace "your_command_here" with the actual command you want to run
+                $this->getServer()->dispatchCommand($player, "/warpgui");
+                
+                // Alternatively, you can open a menu here
+                // $this->openMenu($player);
+            }
+        }
     }
-
-    return true;
-
-  }
+    
+    private function giveSpecialItem(Player $player) {
+        $specialItem = Item::get(Item::COMPASS); // Customize the item type if needed
+        $specialItem->setCustomName("§l§9[Navigator]");
+        
+        $player->getInventory()->addItem($specialItem);
+    }
+    
+    // You can define the menu opening logic here
+    // private function openMenu(Player $player) {
+    //     // Implement your menu opening logic
+    // }
 
 }
