@@ -1,6 +1,6 @@
 name: HUBCORE
 version: 1.0.0
-main: src/plugin/Main
+main: Main
 api: 5.4.2
 author: TheoZP08
 description: testing
