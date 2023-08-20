@@ -1,0 +1,11 @@
+name: plguinfasji
+version: 1.0.0
+main: src/plugin/Main
+api: 5.4.2
+author: Mops
+description: testing
+website: https://example.com
+commands:
+  test:
+    description: test
+    usage: /test
